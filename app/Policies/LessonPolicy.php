@@ -16,8 +16,12 @@ class LessonPolicy
         return $user->can('courses.view') && $this->access->canAccessLesson($user, $lesson);
     }
 
-    public function create(User $user, Chapter $chapter): bool
+    public function create(User $user, ?Chapter $chapter = null): bool
     {
+        if ($chapter === null) {
+            return $user->can('lessons.manage');
+        }
+
         return $user->can('lessons.manage') && $this->access->canManage($user, $chapter->course);
     }
 

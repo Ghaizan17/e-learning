@@ -31,8 +31,12 @@ class AssignmentPolicy
         return $assignment->is_published || $this->access->canManage($user, $course);
     }
 
-    public function create(User $user, Course $course): bool
+    public function create(User $user, ?Course $course = null): bool
     {
+        if ($course === null) {
+            return $user->can('courses.manage');
+        }
+
         return $user->can('courses.manage') && $this->access->canManage($user, $course);
     }
 

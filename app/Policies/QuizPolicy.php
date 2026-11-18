@@ -27,8 +27,12 @@ class QuizPolicy
         return $quiz->is_published || $this->access->canManage($user, $course);
     }
 
-    public function create(User $user, Course $course): bool
+    public function create(User $user, ?Course $course = null): bool
     {
+        if ($course === null) {
+            return $user->can('quizzes.manage');
+        }
+
         return $user->can('quizzes.manage') && $this->access->canManage($user, $course);
     }
 
