@@ -28,7 +28,9 @@
             <span>Batas waktu server: {{ $attempt->expires_at->translatedFormat('d M Y H:i') }}</span>
         </div>
 
-        <form x-ref="form" method="POST" action="{{ route('student.quiz-attempts.submit', $attempt) }}" class="space-y-4">
+        <form x-ref="form" method="POST" action="{{ route('student.quiz-attempts.submit', $attempt) }}"
+              data-confirm="Kumpulkan jawaban sekarang? Jawaban tidak dapat diubah setelah dikumpulkan."
+              class="space-y-4">
             @csrf
 
             @foreach ($questions as $question)
@@ -88,7 +90,6 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <a href="{{ route('student.quizzes.index') }}" class="text-xs text-slate-500 hover:text-slate-700">Keluar tanpa mengumpulkan</a>
                 <button type="submit" :disabled="remaining <= 0"
-                        onclick="return confirm('Kumpulkan jawaban sekarang? Jawaban tidak dapat diubah setelah dikumpulkan.')"
                         class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300">
                     <x-ui.icon name="check" class="h-4 w-4" />
                     Kumpulkan jawaban

@@ -27,6 +27,7 @@
         'paper-clip' => '<path stroke-linecap="round" stroke-linejoin="round" d="m18.75 12.75-6.364 6.364a4.5 4.5 0 1 1-6.364-6.364l7.5-7.5a3 3 0 0 1 4.243 4.243l-7.5 7.5a1.5 1.5 0 0 1-2.121-2.121l6.364-6.364" />',
         'play' => '<path stroke-linecap="round" stroke-linejoin="round" d="M5.25 4.5v15l13.5-7.5-13.5-7.5Z" />',
         'eye' => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12 18 18.75 12 18.75 2.25 12 2.25 12Zm9.75 2.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" />',
+        'alert' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.008M10.34 3.94 2.7 17.25A1.5 1.5 0 0 0 4 19.5h16a1.5 1.5 0 0 0 1.3-2.25L13.66 3.94a1.5 1.5 0 0 0-2.62 0Z" />',
         'lock' => '<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 10.5V7.5a5.25 5.25 0 0 1 10.5 0v3m-12 0h13.5a1.5 1.5 0 0 1 1.5 1.5v7.5a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V12a1.5 1.5 0 0 1 1.5-1.5Z" />',
     ];
 @endphp

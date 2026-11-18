@@ -56,7 +56,7 @@
                     </button>
                 </form>
                 <form method="POST" action="{{ route('teacher.quizzes.destroy', $quiz) }}"
-                      onsubmit="return confirm('Hapus kuis ini beserta soal dan percobaannya?')">
+                      data-confirm="Hapus kuis ini beserta soal dan percobaannya?">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
@@ -114,7 +114,7 @@
                     </div>
 
                     <form method="POST" action="{{ route('teacher.questions.destroy', $question) }}"
-                          onsubmit="return confirm('Hapus soal ini?')">
+                          data-confirm="Hapus soal ini?">
                         @csrf
                         @method('DELETE')
                         <button type="submit"

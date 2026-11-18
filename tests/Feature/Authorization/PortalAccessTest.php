@@ -103,5 +103,7 @@ it('renders portal pages as a full document with vite assets', function (): void
     expect($response->getContent())
         ->toContain('<!DOCTYPE html>')
         ->toContain('<link rel="stylesheet"')
-        ->toContain('<script type="module"');
+        ->toContain('<script type="module"')
+        ->toContain('x-data="portalShell"')
+        ->toContain('id="confirm-dialog-title"');
 });

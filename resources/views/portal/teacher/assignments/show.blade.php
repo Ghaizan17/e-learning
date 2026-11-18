@@ -49,7 +49,7 @@
             </button>
         </form>
         <form method="POST" action="{{ route('teacher.assignments.destroy', $assignment) }}"
-              onsubmit="return confirm('Hapus tugas ini beserta seluruh pengumpulannya?')">
+              data-confirm="Hapus tugas ini beserta seluruh pengumpulannya?">
             @csrf
             @method('DELETE')
             <button type="submit"

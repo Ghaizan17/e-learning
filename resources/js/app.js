@@ -2,6 +2,65 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+Alpine.data('portalShell', () => ({
+    sidebarOpen: false,
+    confirmOpen: false,
+    confirmMessage: '',
+    confirmCallback: null,
+
+    askConfirm(message, callback) {
+        this.confirmMessage = message;
+        this.confirmCallback = callback;
+        this.confirmOpen = true;
+
+        this.$nextTick(() => this.$refs.confirmButton?.focus());
+    },
+
+    cancelConfirm() {
+        this.confirmOpen = false;
+        this.confirmMessage = '';
+        this.confirmCallback = null;
+    },
+
+    resolveConfirm() {
+        const callback = this.confirmCallback;
+        this.cancelConfirm();
+        callback?.();
+    },
+
+    handleConfirmSubmit(event) {
+        const form = event.target;
+
+        if (! form.dataset?.confirm || form.dataset.confirmed === '1') {
+            return;
+        }
+
+        event.preventDefault();
+
+        this.askConfirm(form.dataset.confirm, () => {
+            form.dataset.confirmed = '1';
+            form.requestSubmit();
+            delete form.dataset.confirmed;
+        });
+    },
+
+    handleConfirmClick(event) {
+        const trigger = event.target.closest?.('[data-confirm-form]');
+
+        if (! trigger) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const formId = trigger.dataset.confirmForm;
+
+        this.askConfirm(trigger.dataset.confirm ?? 'Lanjutkan tindakan ini?', () => {
+            document.getElementById(formId)?.requestSubmit();
+        });
+    },
+}));
+
 Alpine.data('quizAttempt', (config) => ({
     remaining: Number(config.remaining),
     saving: false,

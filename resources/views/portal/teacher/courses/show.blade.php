@@ -99,7 +99,7 @@
                             </button>
                         </form>
                         <form method="POST" action="{{ route('teacher.chapters.destroy', $chapter) }}"
-                              onsubmit="return confirm('Hapus bab ini beserta materinya?')">
+                              data-confirm="Hapus bab ini beserta materinya?">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
@@ -147,7 +147,7 @@
                                         </button>
                                     </form>
                                     <form method="POST" action="{{ route('teacher.lessons.destroy', $lesson) }}"
-                                          onsubmit="return confirm('Hapus materi ini?')">
+                                          data-confirm="Hapus materi ini?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -164,7 +164,7 @@
                                         <x-ui.icon name="paper-clip" class="h-3.5 w-3.5" />
                                         {{ $attachment->title }} ({{ $attachment->humanSize() }})
                                         <form method="POST" action="{{ route('teacher.attachments.destroy', $attachment) }}"
-                                              onsubmit="return confirm('Hapus lampiran ini?')">
+                                              data-confirm="Hapus lampiran ini?">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-rose-600 hover:text-rose-700" aria-label="Hapus lampiran">

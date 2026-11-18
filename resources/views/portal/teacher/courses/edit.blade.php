@@ -58,8 +58,8 @@
 
         <x-ui.card title="Zona berbahaya" description="Menghapus kursus juga menghapus bab dan materi di dalamnya.">
             <button type="button"
-                    x-data
-                    @click="if (confirm('Hapus kursus ini? Tindakan ini tidak dapat dibatalkan.')) document.getElementById('delete-course-form').requestSubmit()"
+                    data-confirm-form="delete-course-form"
+                    data-confirm="Hapus kursus ini? Tindakan ini tidak dapat dibatalkan."
                     class="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100">
                 <x-ui.icon name="trash" class="h-4 w-4" />
                 Hapus kursus
