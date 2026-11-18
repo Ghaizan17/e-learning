@@ -15,7 +15,7 @@ class MaterialForm
             ->components([
                 TextInput::make('title')
                     ->required(),
-                FileUpload::make('image-cover')
+                FileUpload::make('cover_image_path')
                     ->image()
                     ->disk('public')
                     ->directory('materials')

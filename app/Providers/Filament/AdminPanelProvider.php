@@ -59,9 +59,19 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Data Master')
                     ->collapsible(true),
-                NavigationGroup::make('Courses')
+                NavigationGroup::make('Akademik')
                     ->collapsible(true),
-                NavigationGroup::make('Settings')
+                NavigationGroup::make('Pembelajaran')
+                    ->collapsible(true),
+                NavigationGroup::make('Penilaian')
+                    ->collapsible(true),
+                NavigationGroup::make('Kehadiran')
+                    ->collapsible(true),
+                NavigationGroup::make('Komunikasi')
+                    ->collapsible(true),
+                NavigationGroup::make('Laporan')
+                    ->collapsible(true),
+                NavigationGroup::make('Pengaturan')
                     ->collapsed(false),
             ])
             ->authMiddleware([

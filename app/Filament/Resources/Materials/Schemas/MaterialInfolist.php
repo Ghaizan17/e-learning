@@ -23,7 +23,7 @@ class MaterialInfolist
                     ->columnSpanFull()
                     ->columns(3)
                     ->schema([
-                        ImageEntry::make('image-cover')
+                        ImageEntry::make('cover_image_path')
                             ->label('Cover image')
                             ->disk('public')
                             ->imageSize(240)

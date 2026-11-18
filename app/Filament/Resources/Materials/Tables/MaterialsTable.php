@@ -21,7 +21,7 @@ class MaterialsTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                ImageColumn::make('image-cover')
+                ImageColumn::make('cover_image_path')
                     ->alt('Material Cover')
                     ->disk('public')
                     ->imageWidth(100)

@@ -23,11 +23,11 @@ class MaterialResource extends Resource
 {
     protected static ?string $model = Material::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Courses' ;
+    protected static string|UnitEnum|null $navigationGroup = 'Pembelajaran';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static string | BackedEnum | null $activeNavigationIcon = Heroicon::DocumentText;
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::DocumentText;
 
     protected static ?string $recordTitleAttribute = 'title';
 

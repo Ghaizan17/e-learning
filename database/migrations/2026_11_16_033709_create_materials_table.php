@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('image-cover')->nullable();
-            $table->longtext('content');
+            $table->string('cover_image_path')->nullable();
+            $table->longText('content');
             $table->softDeletes();
             $table->timestamps();
         });
