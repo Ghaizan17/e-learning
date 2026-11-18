@@ -79,7 +79,9 @@
                     @endif
                     <ul class="space-y-1">
                         @foreach ($section['items'] as $item)
-                            @php($active = request()->routeIs($item['pattern']))
+                            @php
+                                $active = request()->routeIs($item['pattern']);
+                            @endphp
                             <li>
                                 <a href="{{ isset($item['url']) ? url($item['url']) : route($item['route']) }}"
                                    @class([
@@ -135,6 +137,60 @@
                 @if ($roleLabel)
                     <x-ui.badge color="indigo">{{ $roleLabel }}</x-ui.badge>
                 @endif
+
+                @php
+                    $recentNotifications = $user?->notifications()->latest()->limit(5)->get() ?? collect();
+                    $unreadNotifications = $user?->unreadNotifications()->count() ?? 0;
+                @endphp
+
+                <div x-data="{ open: false }" class="relative">
+                    <button type="button" @click="open = ! open" @keydown.escape.window="open = false"
+                            class="relative rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+                            aria-label="Notifikasi">
+                        <x-ui.icon name="bell" class="h-5 w-5" />
+                        @if ($unreadNotifications > 0)
+                            <span class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white">
+                                {{ $unreadNotifications > 9 ? '9+' : $unreadNotifications }}
+                            </span>
+                        @endif
+                    </button>
+
+                    <div x-cloak x-show="open" x-transition @click.outside="open = false"
+                         class="absolute right-0 z-30 mt-2 w-80 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                        <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+                            <p class="text-sm font-semibold text-slate-900">Notifikasi</p>
+                            @if ($unreadNotifications > 0)
+                                <form method="POST" action="{{ route('notifications.read-all') }}">
+                                    @csrf
+                                    <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">
+                                        Tandai semua
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+
+                        <div class="max-h-80 divide-y divide-slate-100 overflow-y-auto">
+                            @forelse ($recentNotifications as $notification)
+                                <form method="POST" action="{{ route('notifications.read', $notification->id) }}">
+                                    @csrf
+                                    <button type="submit" class="block w-full px-4 py-3 text-left transition hover:bg-slate-50">
+                                        <p class="flex items-center gap-2 text-sm font-medium {{ $notification->read_at ? 'text-slate-600' : 'text-slate-900' }}">
+                                            @unless ($notification->read_at)
+                                                <span class="inline-block h-2 w-2 shrink-0 rounded-full bg-indigo-500"></span>
+                                            @endunless
+                                            {{ $notification->data['title'] ?? 'Notifikasi' }}
+                                        </p>
+                                        <p class="mt-1 text-xs text-slate-500">{{ $notification->data['body'] ?? '' }}</p>
+                                        <p class="mt-1 text-[11px] text-slate-400">{{ $notification->created_at?->diffForHumans() }}</p>
+                                    </button>
+                                </form>
+                            @empty
+                                <p class="px-4 py-6 text-center text-sm text-slate-500">Belum ada notifikasi.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
                 <span class="hidden text-sm text-slate-600 sm:block">{{ $user?->name }}</span>
             </div>
         </header>

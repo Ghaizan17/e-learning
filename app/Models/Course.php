@@ -66,6 +66,14 @@ class Course extends Model
     }
 
     /**
+     * @return HasMany<Assignment, $this>
+     */
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class);
+    }
+
+    /**
      * @return HasMany<LessonProgress, $this>
      */
     public function lessonProgress(): HasMany
