@@ -22,19 +22,19 @@ beforeEach(function (): void {
 
 it('shows a teacher their courses and classes', function (): void {
     $this->actingAs($this->fixture->teacher)
-        ->get('/teacher/courses')
+        ->get('/guru/courses')
         ->assertOk()
         ->assertSee('Pemrograman Web Dasar');
 
     $this->actingAs($this->fixture->teacher)
-        ->get('/teacher/classes')
+        ->get('/guru/classes')
         ->assertOk()
         ->assertSee('XI PPLG A');
 });
 
 it('creates a course from the teacher portal', function (): void {
     $this->actingAs($this->fixture->teacher)
-        ->post('/teacher/courses', [
+        ->post('/guru/courses', [
             'teacher_assignment_id' => $this->fixture->assignment->getKey(),
             'title' => 'Kursus Baru',
             'description' => 'Deskripsi kursus baru.',
@@ -50,7 +50,7 @@ it('creates a course from the teacher portal', function (): void {
 
 it('refuses to publish a course without published lessons', function (): void {
     $this->actingAs($this->fixture->teacher)
-        ->post('/teacher/courses/'.$this->fixture->course->getKey().'/publish')
+        ->post('/guru/courses/'.$this->fixture->course->getKey().'/publish')
         ->assertSessionHasErrors('status');
 
     expect($this->fixture->course->fresh()->status->value)->toBe('draft');
@@ -62,13 +62,13 @@ it('publishes a course and syncs students from the teacher portal', function ():
     app(CourseService::class)->publish($this->fixture->course);
 
     $this->actingAs($this->fixture->teacher)
-        ->post('/teacher/courses/'.$this->fixture->course->getKey().'/sync-enrollments')
+        ->post('/guru/courses/'.$this->fixture->course->getKey().'/sync-enrollments')
         ->assertRedirect();
 
     expect(Enrollment::query()->where('course_id', $this->fixture->course->getKey())->count())->toBe(2);
 
     $this->actingAs($this->fixture->teacher)
-        ->get('/teacher/courses/'.$this->fixture->course->getKey().'/students')
+        ->get('/guru/courses/'.$this->fixture->course->getKey().'/students')
         ->assertOk()
         ->assertSee('Siswa 1');
 });
@@ -159,7 +159,7 @@ it('lets a teacher upload and delete a private attachment', function (): void {
     $this->fixture->publishAll();
 
     $this->actingAs($this->fixture->teacher)
-        ->post('/teacher/lessons/'.$this->fixture->lesson->getKey().'/attachments', [
+        ->post('/guru/lessons/'.$this->fixture->lesson->getKey().'/attachments', [
             'title' => 'Modul HTML',
             'file' => UploadedFile::fake()->create('modul.pdf', 120, 'application/pdf'),
         ])
@@ -170,7 +170,7 @@ it('lets a teacher upload and delete a private attachment', function (): void {
     Storage::disk('local')->assertExists($attachment->file_path);
 
     $this->actingAs($this->fixture->teacher)
-        ->delete('/teacher/attachments/'.$attachment->getKey())
+        ->delete('/guru/attachments/'.$attachment->getKey())
         ->assertRedirect();
 
     Storage::disk('local')->assertMissing($attachment->file_path);
@@ -181,6 +181,6 @@ it('blocks teachers from managing a course they do not own', function (): void {
     $other = User::factory()->teacher()->create();
 
     $this->actingAs($other)
-        ->get('/teacher/courses/'.$this->fixture->course->getKey().'/edit')
+        ->get('/guru/courses/'.$this->fixture->course->getKey().'/edit')
         ->assertForbidden();
 });

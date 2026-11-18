@@ -91,6 +91,39 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     }
 
     /**
+     * Whether the user acts as a homeroom teacher (wali kelas).
+     */
+    public function isHomeroomTeacher(): bool
+    {
+        return $this->hasRole(RoleName::HomeroomTeacher->value);
+    }
+
+    /**
+     * URL prefix used by the teacher portal for this role.
+     */
+    public function teacherPortalPrefix(): ?string
+    {
+        return match (true) {
+            $this->isHomeroomTeacher() => 'walikelas',
+            $this->isTeacher() => 'guru',
+            default => null,
+        };
+    }
+
+    /**
+     * Absolute home URL matching the user's role.
+     */
+    public function homeUrl(): string
+    {
+        $route = $this->homeRouteName();
+        $prefix = $this->teacherPortalPrefix();
+
+        return $prefix === null
+            ? route($route)
+            : route($route, ['portal' => $prefix]);
+    }
+
+    /**
      * Portal landing route name for the user.
      */
     public function homeRouteName(): string

@@ -41,7 +41,7 @@ class LoginController extends Controller
             ]);
         }
 
-        return redirect()->intended(route($user->homeRouteName()));
+        return redirect()->intended($user->homeUrl());
     }
 
     /**

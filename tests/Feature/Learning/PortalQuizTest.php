@@ -4,7 +4,9 @@ use App\Enums\QuizAttemptStatus;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\User;
+use App\Services\Learning\QuestionService;
 use App\Services\Learning\QuizAttemptService;
+use App\Services\Learning\QuizService;
 use Tests\Support\QuizFixture;
 
 beforeEach(function (): void {
@@ -126,20 +128,20 @@ it('lets the teacher review attempts but not other students', function (): void 
     $attempt = $this->fixture->start();
 
     $this->actingAs($this->teacher)
-        ->get("/teacher/quiz-attempts/{$attempt->getKey()}")
+        ->get("/guru/quiz-attempts/{$attempt->getKey()}")
         ->assertOk()
         ->assertSee($this->student->name);
 
     $other = $this->fixture->learning->students[1];
 
     $this->actingAs($other)
-        ->get("/teacher/quiz-attempts/{$attempt->getKey()}")
+        ->get("/guru/quiz-attempts/{$attempt->getKey()}")
         ->assertForbidden();
 });
 
 it('builds and publishes a quiz from the teacher portal', function (): void {
     $this->actingAs($this->teacher)
-        ->post('/teacher/quizzes', [
+        ->post('/guru/quizzes', [
             'course_id' => $this->fixture->learning->course->getKey(),
             'title' => 'Kuis Baru',
             'type' => 'quiz',
@@ -152,7 +154,7 @@ it('builds and publishes a quiz from the teacher portal', function (): void {
     $quiz = Quiz::query()->where('title', 'Kuis Baru')->firstOrFail();
 
     $this->actingAs($this->teacher)
-        ->post("/teacher/quizzes/{$quiz->getKey()}/questions", [
+        ->post("/guru/quizzes/{$quiz->getKey()}/questions", [
             'type' => 'multiple_choice',
             'question_text' => 'Ibu kota Indonesia?',
             'score' => 10,
@@ -165,7 +167,7 @@ it('builds and publishes a quiz from the teacher portal', function (): void {
         ->assertSessionHasNoErrors();
 
     $this->actingAs($this->teacher)
-        ->post("/teacher/quizzes/{$quiz->getKey()}/publish")
+        ->post("/guru/quizzes/{$quiz->getKey()}/publish")
         ->assertSessionHasNoErrors();
 
     expect($quiz->fresh()->is_published)->toBeTrue()
@@ -181,7 +183,7 @@ it('grades an essay from the teacher review page', function (): void {
     $answer = $attempt->answers()->where('question_id', $this->fixture->essay->getKey())->firstOrFail();
 
     $this->actingAs($this->teacher)
-        ->post("/teacher/quiz-answers/{$answer->getKey()}/grade", ['score' => 55])
+        ->post("/guru/quiz-answers/{$answer->getKey()}/grade", ['score' => 55])
         ->assertSessionHasNoErrors();
 
     expect((float) $answer->fresh()->score_awarded)->toBe(55.0)
@@ -210,8 +212,8 @@ it('refuses starting a quiz for a student outside the course', function (): void
 });
 
 it('accepts multiple selected options when submitting a multi-select quiz', function (): void {
-    $quizzes = app(App\Services\Learning\QuizService::class);
-    $questions = app(App\Services\Learning\QuestionService::class);
+    $quizzes = app(QuizService::class);
+    $questions = app(QuestionService::class);
 
     $quiz = $quizzes->create($this->fixture->learning->course, [
         'title' => 'Kuis Multi Pilihan',

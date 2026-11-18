@@ -22,7 +22,7 @@ beforeEach(function (): void {
 
 it('creates an assignment draft from the teacher portal', function (): void {
     $this->actingAs($this->teacher)
-        ->post('/teacher/assignments', [
+        ->post('/guru/assignments', [
             'course_id' => $this->fixture->course->getKey(),
             'title' => 'Tugas CSS',
             'instructions' => 'Terapkan tema warna.',
@@ -39,7 +39,7 @@ it('creates an assignment draft from the teacher portal', function (): void {
 
 it('publishes an assignment and notifies enrolled students', function (): void {
     $this->actingAs($this->teacher)
-        ->post("/teacher/assignments/{$this->assignment->getKey()}/publish")
+        ->post("/guru/assignments/{$this->assignment->getKey()}/publish")
         ->assertRedirect();
 
     expect($this->assignment->fresh()->is_published)->toBeTrue()
@@ -100,12 +100,12 @@ it('shows submissions and grading results to the teacher and student', function 
     $submission = Submission::query()->firstOrFail();
 
     $this->actingAs($this->teacher)
-        ->get("/teacher/assignments/{$this->assignment->getKey()}")
+        ->get("/guru/assignments/{$this->assignment->getKey()}")
         ->assertOk()
         ->assertSee('Jawaban siswa.');
 
     $this->actingAs($this->teacher)
-        ->post("/teacher/submissions/{$submission->getKey()}/grade", [
+        ->post("/guru/submissions/{$submission->getKey()}/grade", [
             'score' => 90,
             'feedback' => 'Mantap.',
         ])
@@ -130,7 +130,7 @@ it('refuses grading by a teacher who does not teach the course', function (): vo
     $otherTeacher = User::factory()->teacher()->create();
 
     $this->actingAs($otherTeacher)
-        ->post("/teacher/submissions/{$submission->getKey()}/grade", ['score' => 100])
+        ->post("/guru/submissions/{$submission->getKey()}/grade", ['score' => 100])
         ->assertForbidden();
 
     expect($submission->fresh()->status)->not->toBe(SubmissionStatus::Graded);

@@ -12,6 +12,6 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse
     {
-        return redirect()->route($request->user()->homeRouteName());
+        return redirect()->to($request->user()->homeUrl());
     }
 }

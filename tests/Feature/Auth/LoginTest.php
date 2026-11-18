@@ -35,7 +35,7 @@ it('authenticates a teacher and redirects to the teacher portal', function (): v
     $this->post(route('login'), [
         'email' => $user->email,
         'password' => 'secret-password',
-    ])->assertRedirect(route('teacher.dashboard'));
+    ])->assertRedirect($user->homeUrl());
 });
 
 it('authenticates a homeroom teacher and redirects to the teacher portal', function (): void {
@@ -44,7 +44,7 @@ it('authenticates a homeroom teacher and redirects to the teacher portal', funct
     $this->post(route('login'), [
         'email' => $user->email,
         'password' => 'secret-password',
-    ])->assertRedirect(route('teacher.dashboard'));
+    ])->assertRedirect($user->homeUrl());
 });
 
 it('authenticates a student and redirects to the student portal', function (): void {

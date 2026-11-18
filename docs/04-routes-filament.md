@@ -13,7 +13,7 @@ GET  /reset-password/{token}      Auth\NewPasswordController@create
 POST /reset-password              Auth\NewPasswordController@store
 
 // post-login router
-GET  /dashboard  ->  redirect by primary role (admin → /admin, teacher/homeroom → /teacher, student → /student)
+GET  /dashboard  ->  redirect by primary role (admin → /admin, teacher → /guru, homeroom → /walikelas, student → /student)
 GET  /profile    ->  shared profile edit (name, phone, avatar, password)
 
 // student portal  (auth, verified, role:student, throttle:60,1)
@@ -36,22 +36,22 @@ GET  /profile    ->  shared profile edit (name, phone, avatar, password)
 /student/courses/{course}/discussions   .../{discussion}
 /student/notifications                                         (index + mark read)
 
-// teacher portal  (auth, verified, role:teacher|homeroom_teacher)
-/teacher/dashboard
-/teacher/classes                        /teacher/classes/{classroom}        (read-only roster)
-/teacher/courses                        /teacher/courses/create
-/teacher/courses/{course}               /teacher/courses/{course}/edit
-/teacher/courses/{course}/chapters      + create/edit/reorder/publish
-/teacher/courses/{course}/lessons       + create/edit/reorder/publish
-/teacher/courses/{course}/assignments   + submissions list
-/teacher/submissions/{submission}       + grade POST
-/teacher/courses/{course}/quizzes       + builder
-/teacher/quizzes/{quiz}/questions       + options
-/teacher/courses/{course}/grades        + update POST
-/teacher/courses/{course}/attendance    + sessions CRUD
-/teacher/courses/{course}/announcements
-/teacher/students/{student}             (only own courses / own homeroom)
-/teacher/homeroom                       (wali kelas: monitor, grades, attendance recap)
+// teacher portal  (auth, role:teacher => /guru, role:homeroom_teacher => /walikelas)
+/{guru|walikelas}/dashboard
+/guru/classes                        /guru/classes/{classroom}        (read-only roster)
+/guru/courses                        /guru/courses/create
+/guru/courses/{course}               /guru/courses/{course}/edit
+/guru/courses/{course}/chapters      + create/edit/reorder/publish
+/guru/courses/{course}/lessons       + create/edit/reorder/publish
+/guru/courses/{course}/assignments   + submissions list
+/guru/submissions/{submission}       + grade POST
+/guru/courses/{course}/quizzes       + builder
+/guru/quizzes/{quiz}/questions       + options
+/guru/courses/{course}/grades        + update POST
+/guru/courses/{course}/attendance    + sessions CRUD
+/guru/courses/{course}/announcements
+/guru/students/{student}             (only own courses / own homeroom)
+/guru/homeroom                       (wali kelas: monitor, grades, attendance recap)
 
 // shared authenticated file streaming (policy enforced)
 GET /files/lesson/{lessonAttachment}      File\LessonAttachmentController@show
@@ -73,7 +73,7 @@ auth routes `throttle:5,1`, quiz answer autosave `throttle:120,1` (a single atte
 | POST | `/student/attempts/{attempt}/answer` | autosave one answer `{question_id, option_ids[], answer_text}` |
 | POST | `/student/attempts/{attempt}/submit` | final submit (idempotent, transactional) |
 | POST | `/student/lessons/{lesson}/progress` | mark in-progress/completed |
-| POST | `/teacher/submissions/{submission}/grade` | score + feedback |
+| POST | `/guru/submissions/{submission}/grade` | score + feedback |
 | GET | `/student/notifications/unread-count` | topbar badge polling (30 s) |
 
 All JSON responses use API Resources, never raw models (prevents `is_correct` leakage).
