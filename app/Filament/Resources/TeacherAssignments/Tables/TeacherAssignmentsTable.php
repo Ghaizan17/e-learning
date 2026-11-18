@@ -22,7 +22,7 @@ class TeacherAssignmentsTable
                 TextColumn::make('teacher.name')
                     ->label('Guru')
                     ->searchable(),
-                TextColumn::make('subject.name')
+                TextColumn::make('subject.name')->grow()
                     ->label('Mata pelajaran')
                     ->searchable(),
                 TextColumn::make('classroom.name')

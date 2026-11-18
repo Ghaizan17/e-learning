@@ -22,7 +22,7 @@ class QuizzesTable
     {
         return $table
             ->columns([
-                TextColumn::make('title')->label('Judul')->searchable()->sortable(),
+                TextColumn::make('title')->grow()->label('Judul')->searchable()->sortable(),
                 TextColumn::make('course.title')->label('Kursus')->searchable(),
                 TextColumn::make('course.teacherAssignment.classroom.name')->label('Kelas'),
                 TextColumn::make('type')->label('Jenis')->badge(),

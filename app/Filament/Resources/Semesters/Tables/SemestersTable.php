@@ -24,7 +24,7 @@ class SemestersTable
                     ->label('Tahun ajaran')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('name')
+                TextColumn::make('name')->grow()
                     ->label('Semester')
                     ->badge()
                     ->formatStateUsing(fn (SemesterName $state): string => $state->label())

@@ -21,7 +21,7 @@ class AcademicYearsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->grow()
                     ->label('Tahun ajaran')
                     ->searchable()
                     ->sortable(),

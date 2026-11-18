@@ -23,7 +23,7 @@ class GradesTable
             ->columns([
                 TextColumn::make('student.name')->label('Siswa')->searchable()->sortable(),
                 TextColumn::make('course.title')->label('Kursus')->searchable(),
-                TextColumn::make('component.title')->label('Komponen')->limit(30),
+                TextColumn::make('component.title')->grow()->label('Komponen')->limit(30),
                 TextColumn::make('component.category.name')->label('Kategori')->badge(),
                 TextColumn::make('score')->label('Skor')->alignCenter(),
                 TextColumn::make('max_score')->label('Maks')->alignCenter(),

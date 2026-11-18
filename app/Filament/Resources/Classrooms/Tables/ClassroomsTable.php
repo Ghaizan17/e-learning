@@ -18,7 +18,7 @@ class ClassroomsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->grow()
                     ->label('Kelas')
                     ->searchable()
                     ->sortable(),

@@ -12,7 +12,7 @@ class GradingCategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('course.title')->label('Kursus')->searchable()->sortable(),
+                TextColumn::make('course.title')->grow()->label('Kursus')->searchable()->sortable(),
                 TextColumn::make('name')->label('Kategori')->badge(),
                 TextColumn::make('weight')->label('Bobot')->suffix('%')->alignCenter()->sortable(),
             ])

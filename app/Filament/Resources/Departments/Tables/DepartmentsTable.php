@@ -20,7 +20,7 @@ class DepartmentsTable
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('name')
+                TextColumn::make('name')->grow()
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),

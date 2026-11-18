@@ -19,7 +19,7 @@ class UsersTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->grow()
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
