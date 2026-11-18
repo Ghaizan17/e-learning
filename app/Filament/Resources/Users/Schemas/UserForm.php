@@ -16,7 +16,7 @@ class UserForm
         return $schema
             ->components([
                 Section::make('Akun')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         TextInput::make('name')
                             ->label('Nama lengkap')

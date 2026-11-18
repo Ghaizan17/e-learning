@@ -59,7 +59,7 @@ class QuestionsRelationManager extends RelationManager
                         TextInput::make('option_text')->label('Teks')->required(),
                         Toggle::make('is_correct')->label('Jawaban benar'),
                     ])
-                    ->columns(2)
+                    ->columns(1)
                     ->defaultItems(2)
                     ->maxItems(10)
                     ->columnSpanFull(),

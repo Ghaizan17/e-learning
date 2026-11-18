@@ -21,7 +21,7 @@ class TeacherAssignmentForm
         return $schema
             ->components([
                 Section::make('Penugasan mengajar')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         Select::make('academic_year_id')
                             ->label('Tahun ajaran')

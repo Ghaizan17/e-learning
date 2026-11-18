@@ -15,7 +15,7 @@ class AcademicYearForm
         return $schema
             ->components([
                 Section::make('Identitas tahun ajaran')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         TextInput::make('name')
                             ->label('Nama tahun ajaran')

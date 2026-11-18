@@ -17,7 +17,7 @@ class SemesterForm
         return $schema
             ->components([
                 Section::make('Detail semester')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         Select::make('academic_year_id')
                             ->label('Tahun ajaran')

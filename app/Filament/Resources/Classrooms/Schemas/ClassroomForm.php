@@ -18,7 +18,7 @@ class ClassroomForm
         return $schema
             ->components([
                 Section::make('Identitas kelas')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         Select::make('academic_year_id')
                             ->label('Tahun ajaran')

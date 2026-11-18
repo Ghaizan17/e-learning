@@ -18,7 +18,7 @@ class AssignmentForm
         return $schema
             ->components([
                 Section::make('Tugas')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         Select::make('course_id')
                             ->label('Kursus')
