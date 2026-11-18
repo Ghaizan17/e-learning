@@ -210,4 +210,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             ->first()
             ?->classroom;
     }
+
+    /**
+     * @return HasMany<Grade, $this>
+     */
+    public function gradesReceived(): HasMany
+    {
+        return $this->hasMany(Grade::class);
+    }
+
+    /**
+     * @return HasMany<Enrollment, $this>
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 }

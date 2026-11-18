@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['course_id', 'title', 'instructions', 'due_at', 'max_score', 'allow_resubmission', 'is_published'])]
@@ -72,5 +73,13 @@ class Assignment extends Model
             ->where('is_latest', true)
             ->with(['files', 'grade'])
             ->first();
+    }
+
+    /**
+     * @return MorphOne<GradeComponent, $this>
+     */
+    public function gradeComponent(): MorphOne
+    {
+        return $this->morphOne(GradeComponent::class, 'gradeable');
     }
 }

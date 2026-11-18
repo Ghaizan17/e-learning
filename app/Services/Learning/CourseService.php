@@ -5,13 +5,17 @@ namespace App\Services\Learning;
 use App\Enums\CourseStatus;
 use App\Models\Course;
 use App\Models\TeacherAssignment;
+use App\Services\Grading\GradingSchemeService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class CourseService
 {
-    public function __construct(private readonly EnrollmentService $enrollments) {}
+    public function __construct(
+        private readonly EnrollmentService $enrollments,
+        private readonly GradingSchemeService $grading,
+    ) {}
 
     /**
      * Create a course for a teaching assignment. New courses always start as drafts.
@@ -20,14 +24,20 @@ class CourseService
      */
     public function create(TeacherAssignment $assignment, array $data): Course
     {
-        return DB::transaction(fn (): Course => Course::query()->create([
-            'teacher_assignment_id' => $assignment->getKey(),
-            'title' => $data['title'],
-            'slug' => $this->uniqueSlug($data['title']),
-            'description' => $data['description'] ?? null,
-            'thumbnail_path' => $data['thumbnail_path'] ?? null,
-            'status' => CourseStatus::Draft,
-        ]));
+        return DB::transaction(function () use ($assignment, $data): Course {
+            $course = Course::query()->create([
+                'teacher_assignment_id' => $assignment->getKey(),
+                'title' => $data['title'],
+                'slug' => $this->uniqueSlug($data['title']),
+                'description' => $data['description'] ?? null,
+                'thumbnail_path' => $data['thumbnail_path'] ?? null,
+                'status' => CourseStatus::Draft,
+            ]);
+
+            $this->grading->ensureDefaultScheme($course);
+
+            return $course;
+        });
     }
 
     /**
@@ -128,6 +138,8 @@ class CourseService
                 'status' => 'Kursus harus memiliki minimal satu bab dan materi yang sudah diterbitkan.',
             ]);
         }
+
+        $this->grading->assertValid($course);
     }
 
     /**

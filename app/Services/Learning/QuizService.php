@@ -5,11 +5,14 @@ namespace App\Services\Learning;
 use App\Enums\QuestionType;
 use App\Models\Course;
 use App\Models\Quiz;
+use App\Services\Grading\GradeComponentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class QuizService
 {
+    public function __construct(private readonly GradeComponentService $components) {}
+
     /**
      * @param  array<string, mixed>  $data
      */
@@ -60,6 +63,8 @@ class QuizService
         $this->assertPublishable($quiz);
 
         $quiz->update(['is_published' => true]);
+
+        $this->components->syncQuiz($quiz);
 
         return $quiz->refresh();
     }

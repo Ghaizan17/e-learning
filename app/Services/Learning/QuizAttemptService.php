@@ -9,6 +9,7 @@ use App\Models\Quiz;
 use App\Models\QuizAnswer;
 use App\Models\QuizAttempt;
 use App\Models\User;
+use App\Services\Grading\GradeSyncService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,7 @@ class QuizAttemptService
     public function __construct(
         private readonly CourseAccessService $access,
         private readonly QuizAutoGradingService $grading,
+        private readonly GradeSyncService $gradeSync,
     ) {}
 
     /**
@@ -171,6 +173,10 @@ class QuizAttemptService
             ]);
         }
 
+        if ($attempt->status === QuizAttemptStatus::Graded) {
+            $this->gradeSync->syncQuizAttempt($attempt);
+        }
+
         return $attempt;
     }
 
@@ -182,7 +188,10 @@ class QuizAttemptService
 
         DB::transaction(fn () => $this->expireAttempt($attempt));
 
-        return $attempt->refresh();
+        $attempt->refresh();
+        $this->gradeSync->syncQuizAttempt($attempt);
+
+        return $attempt;
     }
 
     /**

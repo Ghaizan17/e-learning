@@ -15,7 +15,10 @@ class AcademicYearFactory extends Factory
      */
     public function definition(): array
     {
-        $startYear = fake()->numberBetween(2020, 2035);
+        $latestStart = AcademicYear::query()->max('start_date');
+        $startYear = $latestStart === null
+            ? fake()->numberBetween(2020, 2035)
+            : (int) date('Y', strtotime((string) $latestStart)) + 1;
 
         return [
             'name' => $startYear.'/'.($startYear + 1),

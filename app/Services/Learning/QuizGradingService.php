@@ -7,12 +7,16 @@ use App\Enums\QuizAttemptStatus;
 use App\Models\QuizAnswer;
 use App\Models\User;
 use App\Notifications\QuizAttemptGradedNotification;
+use App\Services\Grading\GradeSyncService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class QuizGradingService
 {
-    public function __construct(private readonly QuizAutoGradingService $auto) {}
+    public function __construct(
+        private readonly QuizAutoGradingService $auto,
+        private readonly GradeSyncService $gradeSync,
+    ) {}
 
     /**
      * Manually grade an essay answer and recompute the attempt total.
@@ -55,6 +59,7 @@ class QuizGradingService
 
             if ($pending === 0) {
                 $attempt->student?->notify(new QuizAttemptGradedNotification($attempt->refresh()->load('quiz')));
+                $this->gradeSync->syncQuizAttempt($attempt->refresh());
             }
 
             return $answer->refresh();

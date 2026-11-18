@@ -5,12 +5,15 @@ namespace App\Services\Learning;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Notifications\AssignmentPublishedNotification;
+use App\Services\Grading\GradeComponentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 
 class AssignmentService
 {
+    public function __construct(private readonly GradeComponentService $components) {}
+
     /**
      * @param  array{title: string, instructions: string, due_at: string, max_score?: float|int, allow_resubmission?: bool}  $data
      */
@@ -49,6 +52,8 @@ class AssignmentService
 
         return DB::transaction(function () use ($assignment): Assignment {
             $assignment->update(['is_published' => true]);
+
+            $this->components->syncAssignment($assignment);
 
             $students = $assignment->course
                 ->enrollments()

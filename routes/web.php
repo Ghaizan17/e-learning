@@ -8,6 +8,7 @@ use App\Http\Controllers\Learning\SubmissionFileController as SharedSubmissionFi
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\Grading\GradeController as StudentGradeController;
 use App\Http\Controllers\Student\Learning\AssignmentController as StudentAssignmentController;
 use App\Http\Controllers\Student\Learning\CourseController as StudentCourseController;
 use App\Http\Controllers\Student\Learning\LessonController as StudentLessonController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\Student\Learning\QuizAttemptController as StudentQuizAt
 use App\Http\Controllers\Student\Learning\QuizController as StudentQuizController;
 use App\Http\Controllers\Teacher\ClassController as TeacherClassController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
+use App\Http\Controllers\Teacher\Grading\GradebookController as TeacherGradebookController;
+use App\Http\Controllers\Teacher\Grading\GradingSchemeController as TeacherGradingSchemeController;
 use App\Http\Controllers\Teacher\Learning\AssignmentAttachmentController;
 use App\Http\Controllers\Teacher\Learning\AssignmentController as TeacherAssignmentController;
 use App\Http\Controllers\Teacher\Learning\ChapterController;
@@ -69,6 +72,9 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('assignments/{assignment}', [StudentAssignmentController::class, 'show'])->name('assignments.show');
     Route::post('assignments/{assignment}/submit', [StudentAssignmentController::class, 'submit'])->name('assignments.submit');
 
+    Route::get('grades', [StudentGradeController::class, 'index'])->name('grades.index');
+    Route::get('grades/{course}', [StudentGradeController::class, 'show'])->name('grades.show');
+
     Route::get('quizzes', [StudentQuizController::class, 'index'])->name('quizzes.index');
     Route::get('quizzes/{quiz}', [StudentQuizController::class, 'show'])->name('quizzes.show');
     Route::post('quizzes/{quiz}/start', [StudentQuizController::class, 'start'])->name('quizzes.start');
@@ -101,6 +107,15 @@ Route::middleware(['auth', 'role:teacher,homeroom_teacher', 'portal.prefix'])
         Route::post('courses/{course}/publish', [CourseController::class, 'publish'])->name('courses.publish');
         Route::post('courses/{course}/archive', [CourseController::class, 'archive'])->name('courses.archive');
         Route::get('courses/{course}/students', [CourseController::class, 'students'])->name('courses.students');
+
+        Route::get('grades', [TeacherGradebookController::class, 'index'])->name('grades.index');
+        Route::get('courses/{course}/grades', [TeacherGradebookController::class, 'show'])->name('grades.show');
+        Route::get('courses/{course}/grades/export', [TeacherGradebookController::class, 'export'])->name('grades.export');
+        Route::put('grades/{grade}', [TeacherGradebookController::class, 'update'])->name('grades.update');
+        Route::post('grades/{grade}/publish', [TeacherGradebookController::class, 'publish'])->name('grades.publish');
+
+        Route::get('courses/{course}/grading', [TeacherGradingSchemeController::class, 'show'])->name('grading.show');
+        Route::put('courses/{course}/grading', [TeacherGradingSchemeController::class, 'update'])->name('grading.update');
         Route::post('courses/{course}/sync-enrollments', [CourseController::class, 'syncEnrollments'])->name('courses.sync-enrollments');
 
         Route::post('courses/{course}/chapters', [ChapterController::class, 'store'])->name('chapters.store');

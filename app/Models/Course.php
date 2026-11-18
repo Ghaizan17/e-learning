@@ -139,4 +139,28 @@ class Course extends Model
     {
         return $this->teacherAssignment?->teacher_id === $user->getKey();
     }
+
+    /**
+     * @return HasMany<GradingCategory, $this>
+     */
+    public function gradingCategories(): HasMany
+    {
+        return $this->hasMany(GradingCategory::class);
+    }
+
+    /**
+     * @return HasMany<GradeComponent, $this>
+     */
+    public function gradeComponents(): HasMany
+    {
+        return $this->hasMany(GradeComponent::class);
+    }
+
+    /**
+     * @return HasMany<Grade, $this>
+     */
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class);
+    }
 }

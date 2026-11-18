@@ -8,13 +8,17 @@ use App\Models\Submission;
 use App\Models\SubmissionGrade;
 use App\Models\User;
 use App\Notifications\AssignmentGradedNotification;
+use App\Services\Grading\GradeSyncService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class AssignmentSubmissionService
 {
-    public function __construct(private readonly CourseAccessService $access) {}
+    public function __construct(
+        private readonly CourseAccessService $access,
+        private readonly GradeSyncService $gradeSync,
+    ) {}
 
     /**
      * Submit an assignment, flagging late work and closing the previous attempt.
@@ -97,7 +101,7 @@ class AssignmentSubmissionService
             ]);
         }
 
-        return DB::transaction(function () use ($submission, $grader, $score, $feedback): SubmissionGrade {
+        $grade = DB::transaction(function () use ($submission, $grader, $score, $feedback): SubmissionGrade {
             $grade = SubmissionGrade::query()->updateOrCreate(
                 ['submission_id' => $submission->getKey()],
                 [
@@ -118,6 +122,10 @@ class AssignmentSubmissionService
 
             return $grade;
         });
+
+        $this->gradeSync->syncAssignment($grade);
+
+        return $grade;
     }
 
     /**

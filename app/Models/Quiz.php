@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
@@ -105,5 +106,13 @@ class Quiz extends Model
             ->where('user_id', $user->getKey())
             ->where('status', 'in_progress')
             ->first();
+    }
+
+    /**
+     * @return MorphOne<GradeComponent, $this>
+     */
+    public function gradeComponent(): MorphOne
+    {
+        return $this->morphOne(GradeComponent::class, 'gradeable');
     }
 }

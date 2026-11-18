@@ -27,6 +27,15 @@
                 <x-ui.icon name="users" class="h-4 w-4" />
                 Siswa
             </a>
+            <a href="{{ route('teacher.grades.show', $course) }}"
+               class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+                <x-ui.icon name="chart" class="h-4 w-4" />
+                Buku nilai
+            </a>
+            <a href="{{ route('teacher.grading.show', $course) }}"
+               class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Skema nilai
+            </a>
             <a href="{{ route('teacher.courses.edit', $course) }}"
                class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 <x-ui.icon name="pencil" class="h-4 w-4" />
