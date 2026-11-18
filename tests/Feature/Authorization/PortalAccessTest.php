@@ -94,3 +94,14 @@ it('redirects the shared dashboard to the portal matching the role', function ()
         ->get(route('dashboard'))
         ->assertRedirect(route('filament.admin.pages.dashboard'));
 });
+
+it('renders portal pages as a full document with vite assets', function (): void {
+    $response = $this->actingAs(User::factory()->student()->create())
+        ->get(route('student.dashboard'))
+        ->assertOk();
+
+    expect($response->getContent())
+        ->toContain('<!DOCTYPE html>')
+        ->toContain('<link rel="stylesheet"')
+        ->toContain('<script type="module"');
+});
