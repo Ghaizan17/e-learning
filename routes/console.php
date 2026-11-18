@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ExpireQuizAttempts;
 use App\Jobs\SendAssignmentDeadlineReminders;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -10,3 +11,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::job(new SendAssignmentDeadlineReminders)->hourly();
+Schedule::job(new ExpireQuizAttempts)->everyFiveMinutes();

@@ -11,6 +11,8 @@ use App\Http\Controllers\Student\DashboardController as StudentDashboardControll
 use App\Http\Controllers\Student\Learning\AssignmentController as StudentAssignmentController;
 use App\Http\Controllers\Student\Learning\CourseController as StudentCourseController;
 use App\Http\Controllers\Student\Learning\LessonController as StudentLessonController;
+use App\Http\Controllers\Student\Learning\QuizAttemptController as StudentQuizAttemptController;
+use App\Http\Controllers\Student\Learning\QuizController as StudentQuizController;
 use App\Http\Controllers\Teacher\ClassController as TeacherClassController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use App\Http\Controllers\Teacher\Learning\AssignmentAttachmentController;
@@ -19,6 +21,10 @@ use App\Http\Controllers\Teacher\Learning\ChapterController;
 use App\Http\Controllers\Teacher\Learning\CourseController;
 use App\Http\Controllers\Teacher\Learning\LessonAttachmentController;
 use App\Http\Controllers\Teacher\Learning\LessonController;
+use App\Http\Controllers\Teacher\Learning\QuestionController as TeacherQuestionController;
+use App\Http\Controllers\Teacher\Learning\QuizAnswerController as TeacherQuizAnswerController;
+use App\Http\Controllers\Teacher\Learning\QuizAttemptController as TeacherQuizAttemptController;
+use App\Http\Controllers\Teacher\Learning\QuizController as TeacherQuizController;
 use App\Http\Controllers\Teacher\Learning\SubmissionController as TeacherSubmissionController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +68,14 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('assignments', [StudentAssignmentController::class, 'index'])->name('assignments.index');
     Route::get('assignments/{assignment}', [StudentAssignmentController::class, 'show'])->name('assignments.show');
     Route::post('assignments/{assignment}/submit', [StudentAssignmentController::class, 'submit'])->name('assignments.submit');
+
+    Route::get('quizzes', [StudentQuizController::class, 'index'])->name('quizzes.index');
+    Route::get('quizzes/{quiz}', [StudentQuizController::class, 'show'])->name('quizzes.show');
+    Route::post('quizzes/{quiz}/start', [StudentQuizController::class, 'start'])->name('quizzes.start');
+    Route::get('quiz-attempts/{attempt}', [StudentQuizAttemptController::class, 'show'])->name('quiz-attempts.show');
+    Route::post('quiz-attempts/{attempt}/answers', [StudentQuizAttemptController::class, 'saveAnswer'])->name('quiz-attempts.answers');
+    Route::post('quiz-attempts/{attempt}/submit', [StudentQuizAttemptController::class, 'submit'])->name('quiz-attempts.submit');
+    Route::get('quiz-attempts/{attempt}/result', [StudentQuizAttemptController::class, 'result'])->name('quiz-attempts.result');
 });
 
 Route::middleware(['auth', 'role:teacher,homeroom_teacher'])->prefix('teacher')->name('teacher.')->group(function (): void {
@@ -110,4 +124,21 @@ Route::middleware(['auth', 'role:teacher,homeroom_teacher'])->prefix('teacher')-
     Route::delete('assignment-attachments/{attachment}', [AssignmentAttachmentController::class, 'destroy'])->name('assignment-attachments.destroy');
 
     Route::post('submissions/{submission}/grade', [TeacherSubmissionController::class, 'grade'])->name('submissions.grade');
+
+    Route::get('quizzes', [TeacherQuizController::class, 'index'])->name('quizzes.index');
+    Route::get('quizzes/create', [TeacherQuizController::class, 'create'])->name('quizzes.create');
+    Route::post('quizzes', [TeacherQuizController::class, 'store'])->name('quizzes.store');
+    Route::get('quizzes/{quiz}', [TeacherQuizController::class, 'show'])->name('quizzes.show');
+    Route::get('quizzes/{quiz}/edit', [TeacherQuizController::class, 'edit'])->name('quizzes.edit');
+    Route::patch('quizzes/{quiz}', [TeacherQuizController::class, 'update'])->name('quizzes.update');
+    Route::delete('quizzes/{quiz}', [TeacherQuizController::class, 'destroy'])->name('quizzes.destroy');
+    Route::post('quizzes/{quiz}/publish', [TeacherQuizController::class, 'publish'])->name('quizzes.publish');
+    Route::post('quizzes/{quiz}/unpublish', [TeacherQuizController::class, 'unpublish'])->name('quizzes.unpublish');
+
+    Route::post('quizzes/{quiz}/questions', [TeacherQuestionController::class, 'store'])->name('questions.store');
+    Route::patch('questions/{question}', [TeacherQuestionController::class, 'update'])->name('questions.update');
+    Route::delete('questions/{question}', [TeacherQuestionController::class, 'destroy'])->name('questions.destroy');
+
+    Route::get('quiz-attempts/{attempt}', [TeacherQuizAttemptController::class, 'show'])->name('quiz-attempts.show');
+    Route::post('quiz-answers/{answer}/grade', [TeacherQuizAnswerController::class, 'grade'])->name('quiz-answers.grade');
 });
