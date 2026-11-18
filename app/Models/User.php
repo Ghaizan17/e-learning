@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ClassroomMemberStatus;
 use App\Enums\RoleName;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
@@ -10,6 +11,8 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -98,5 +101,80 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             $this->isStudent() => 'student.dashboard',
             default => 'profile.edit',
         };
+    }
+
+    /**
+     * @return HasOne<StudentProfile, $this>
+     */
+    public function studentProfile(): HasOne
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * @return HasOne<TeacherProfile, $this>
+     */
+    public function teacherProfile(): HasOne
+    {
+        return $this->hasOne(TeacherProfile::class);
+    }
+
+    /**
+     * Classrooms where this user is the homeroom teacher.
+     *
+     * @return HasMany<Classroom, $this>
+     */
+    public function homeroomClassrooms(): HasMany
+    {
+        return $this->hasMany(Classroom::class, 'homeroom_teacher_id');
+    }
+
+    /**
+     * Teaching assignments owned by this user.
+     *
+     * @return HasMany<TeacherAssignment, $this>
+     */
+    public function teachingAssignments(): HasMany
+    {
+        return $this->hasMany(TeacherAssignment::class, 'teacher_id');
+    }
+
+    /**
+     * Classroom placements (academic history included).
+     *
+     * @return HasMany<ClassroomMember, $this>
+     */
+    public function classroomMemberships(): HasMany
+    {
+        return $this->hasMany(ClassroomMember::class);
+    }
+
+    /**
+     * Whether this teacher has any assignment in the given classroom.
+     */
+    public function teachesIn(Classroom $classroom): bool
+    {
+        return $this->teachingAssignments()->where('classroom_id', $classroom->getKey())->exists();
+    }
+
+    /**
+     * Whether this user is the homeroom teacher of the given classroom.
+     */
+    public function isHomeroomOf(Classroom $classroom): bool
+    {
+        return $classroom->homeroom_teacher_id === $this->getKey();
+    }
+
+    /**
+     * The student's active classroom in the active academic year, if any.
+     */
+    public function activeClassroom(): ?Classroom
+    {
+        return $this->classroomMemberships()
+            ->where('status', ClassroomMemberStatus::Active->value)
+            ->whereHas('classroom.academicYear', fn ($query) => $query->where('is_active', true))
+            ->with('classroom.academicYear')
+            ->first()
+            ?->classroom;
     }
 }

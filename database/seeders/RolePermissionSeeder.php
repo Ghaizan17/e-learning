@@ -73,7 +73,7 @@ class RolePermissionSeeder extends Seeder
 
         $teacherPermissions = [
             'academic_years.view', 'semesters.view', 'departments.view', 'subjects.view',
-            'classrooms.view', 'students.view',
+            'classrooms.view', 'students.view', 'teacher_assignments.view',
             'courses.view', 'courses.manage', 'courses.publish',
             'chapters.manage', 'lessons.manage',
             'assignments.view', 'assignments.manage', 'submissions.view', 'submissions.grade',
