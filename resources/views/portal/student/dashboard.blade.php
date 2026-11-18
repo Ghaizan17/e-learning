@@ -18,17 +18,44 @@
     </x-ui.page-header>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <x-ui.stat label="Kursus diikuti" value="0" hint="Belum ada kelas yang terhubung." />
-        <x-ui.stat label="Tugas mendatang" value="0" hint="Tidak ada tenggat terdekat." />
-        <x-ui.stat label="Rata-rata nilai" value="—" hint="Nilai muncul setelah penilaian." />
-        <x-ui.stat label="Kehadiran" value="—" hint="Belum ada sesi pembelajaran." />
+        <x-ui.stat label="Kursus diikuti" :value="$stats['courses']" hint="Kursus aktif dan selesai." />
+        <x-ui.stat label="Materi selesai" :value="$stats['completedLessons']" :hint="$stats['inProgress'].' materi sedang dipelajari'" />
+        <x-ui.stat label="Kursus selesai" :value="$stats['completedCourses']" hint="Seluruh materi tuntas." />
+        <x-ui.stat label="Rata-rata progres" :value="$stats['averageProgress'].'%'" hint="Dari seluruh kursus." />
     </div>
 
     <div class="mt-6 grid gap-6 lg:grid-cols-3">
         <x-ui.card class="lg:col-span-2" title="Kursus saya">
-            <x-ui.empty-state
-                title="Belum ada kursus"
-                description="Kursus akan muncul di sini setelah admin memasukkan Anda ke kelas dan guru menerbitkan materi." />
+            @if ($courses->isEmpty())
+                <x-ui.empty-state
+                    title="Belum ada kursus"
+                    description="Kursus akan muncul di sini setelah guru menerbitkan materi untuk kelas Anda." />
+            @else
+                <ul class="divide-y divide-slate-100">
+                    @foreach ($courses as $item)
+                        <li class="py-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="min-w-0">
+                                    <a href="{{ route('student.courses.show', $item['course']) }}"
+                                       class="truncate text-sm font-medium text-slate-900 hover:text-indigo-600">
+                                        {{ $item['course']->title }}
+                                    </a>
+                                    <p class="text-xs text-slate-500">
+                                        {{ $item['course']->teacherAssignment?->subject?->name }}
+                                        &middot; {{ $item['course']->teacherAssignment?->teacher?->name }}
+                                    </p>
+                                </div>
+                                <x-ui.badge :color="$item['status']->value === 'completed' ? 'success' : 'indigo'">
+                                    {{ $item['status']->label() }}
+                                </x-ui.badge>
+                            </div>
+                            <div class="mt-2">
+                                <x-ui.progress :value="$item['percent']" />
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </x-ui.card>
 
         <x-ui.card title="Profil singkat">

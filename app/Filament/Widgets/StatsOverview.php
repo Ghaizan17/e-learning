@@ -2,11 +2,12 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Material;
+use App\Models\Classroom;
+use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Spatie\Permission\Models\Role;
 
 class StatsOverview extends StatsOverviewWidget
 {
@@ -21,22 +22,27 @@ class StatsOverview extends StatsOverviewWidget
     {
         $totalUsers = User::query()->count();
         $activeUsers = User::query()->where('is_active', true)->count();
-        $totalMaterials = Material::query()->count();
-        $totalRoles = Role::query()->count();
+        $totalClasses = Classroom::query()->count();
+        $publishedCourses = Course::query()->published()->count();
+        $totalEnrollments = Enrollment::query()->count();
 
         return [
-            Stat::make('Total pengguna', $totalUsers)
+            Stat::make('Pengguna', $totalUsers)
                 ->description($activeUsers.' akun aktif')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('info'),
-            Stat::make('Total materi', $totalMaterials)
-                ->description('Materi pembelajaran tersimpan')
-                ->descriptionIcon('heroicon-m-document-text')
+            Stat::make('Kelas', $totalClasses)
+                ->description('Kelas pada semua tahun ajaran')
+                ->descriptionIcon('heroicon-m-user-group')
                 ->color('success'),
-            Stat::make('Peran sistem', $totalRoles)
-                ->description('Peran terdaftar di Spatie Permission')
-                ->descriptionIcon('heroicon-m-shield-check')
+            Stat::make('Kursus terbit', $publishedCourses)
+                ->description('Dari '.Course::query()->count().' kursus')
+                ->descriptionIcon('heroicon-m-book-open')
                 ->color('warning'),
+            Stat::make('Pendaftaran kursus', $totalEnrollments)
+                ->description('Siswa terdaftar di kursus')
+                ->descriptionIcon('heroicon-m-academic-cap')
+                ->color('primary'),
         ];
     }
 }

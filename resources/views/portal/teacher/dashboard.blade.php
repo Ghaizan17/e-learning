@@ -21,17 +21,48 @@
     </x-ui.page-header>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <x-ui.stat label="Kelas diampu" value="0" hint="Penugasan mengajar belum tersedia." />
-        <x-ui.stat label="Kursus aktif" value="0" hint="Belum ada kursus yang diterbitkan." />
-        <x-ui.stat label="Submission menunggu" value="0" hint="Tidak ada pekerjaan untuk dinilai." />
-        <x-ui.stat label="Sesi mendatang" value="0" hint="Belum ada jadwal pertemuan." />
+        <x-ui.stat label="Kelas diampu" :value="$stats['classes']" hint="Penugasan mengajar aktif." />
+        <x-ui.stat label="Kursus terbit" :value="$stats['publishedCourses']" :hint="$stats['draftCourses'].' kursus masih draf'" />
+        <x-ui.stat label="Siswa terdaftar" :value="$stats['students']" hint="Di seluruh kursus Anda." />
+        <x-ui.stat label="Kursus" :value="$stats['publishedCourses'] + $stats['draftCourses']" hint="Terbit dan draf." />
     </div>
 
     <div class="mt-6 grid gap-6 lg:grid-cols-3">
         <x-ui.card class="lg:col-span-2" title="Kursus saya">
-            <x-ui.empty-state
-                title="Belum ada kursus"
-                description="Kursus akan muncul setelah admin menetapkan penugasan mengajar untuk Anda." />
+            @if ($courses->isEmpty())
+                <x-ui.empty-state
+                    title="Belum ada kursus"
+                    description="Buat kursus dari penugasan mengajar Anda untuk mulai menyusun materi.">
+                    <x-slot:action>
+                        <a href="{{ route('teacher.courses.create') }}"
+                           class="rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+                            Buat kursus
+                        </a>
+                    </x-slot:action>
+                </x-ui.empty-state>
+            @else
+                <ul class="divide-y divide-slate-100">
+                    @foreach ($courses as $course)
+                        <li class="flex flex-wrap items-center justify-between gap-2 py-3">
+                            <div class="min-w-0">
+                                <a href="{{ route('teacher.courses.show', $course) }}"
+                                   class="truncate text-sm font-medium text-slate-900 hover:text-indigo-600">
+                                    {{ $course->title }}
+                                </a>
+                                <p class="text-xs text-slate-500">
+                                    {{ $course->teacherAssignment?->classroom?->name }}
+                                    &middot; {{ $course->teacherAssignment?->subject?->name }}
+                                    &middot; {{ $course->chapters_count }} bab
+                                    &middot; {{ $course->enrollments_count }} siswa
+                                </p>
+                            </div>
+                            <x-ui.badge :color="$course->status->value === 'published' ? 'success' : 'slate'">
+                                {{ $course->status->label() }}
+                            </x-ui.badge>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </x-ui.card>
 
         <x-ui.card title="Profil singkat">
