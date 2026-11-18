@@ -208,3 +208,49 @@ it('refuses starting a quiz for a student outside the course', function (): void
         ->post("/student/quizzes/{$this->fixture->quiz->getKey()}/start")
         ->assertForbidden();
 });
+
+it('accepts multiple selected options when submitting a multi-select quiz', function (): void {
+    $quizzes = app(App\Services\Learning\QuizService::class);
+    $questions = app(App\Services\Learning\QuestionService::class);
+
+    $quiz = $quizzes->create($this->fixture->learning->course, [
+        'title' => 'Kuis Multi Pilihan',
+        'duration_minutes' => 10,
+        'max_attempts' => 1,
+    ]);
+
+    $question = $questions->create($quiz, [
+        'type' => 'multiple_select',
+        'question_text' => 'Pilih semua elemen semantik.',
+        'score' => 10,
+        'options' => [
+            ['option_text' => 'header', 'is_correct' => true],
+            ['option_text' => 'main', 'is_correct' => true],
+            ['option_text' => 'font', 'is_correct' => false],
+        ],
+    ]);
+
+    $quizzes->publish($quiz);
+    $attempt = app(QuizAttemptService::class)->start($quiz, $this->student);
+    $correctIds = $question->options->where('is_correct', true)->pluck('id')->all();
+
+    $this->actingAs($this->student)
+        ->post("/student/quiz-attempts/{$attempt->getKey()}/submit", [
+            'answers' => [$question->getKey() => $correctIds],
+        ])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect("/student/quiz-attempts/{$attempt->getKey()}/result");
+
+    expect($attempt->fresh()->status)->toBe(QuizAttemptStatus::Graded)
+        ->and((float) $attempt->fresh()->score)->toBe(10.0);
+});
+
+it('rejects submitting an unknown option id', function (): void {
+    $attempt = $this->fixture->start();
+
+    $this->actingAs($this->student)
+        ->post("/student/quiz-attempts/{$attempt->getKey()}/submit", [
+            'answers' => [$this->fixture->choice->getKey() => 999999],
+        ])
+        ->assertSessionHasErrors('answers.'.$this->fixture->choice->getKey());
+});

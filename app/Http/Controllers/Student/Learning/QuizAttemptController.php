@@ -6,8 +6,10 @@ use App\Enums\QuizAttemptStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Learning\SaveQuizAnswerRequest;
 use App\Models\Question;
+use App\Models\QuestionOption;
 use App\Models\QuizAttempt;
 use App\Services\Learning\QuizAttemptService;
+use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -74,7 +76,17 @@ class QuizAttemptController extends Controller
 
         $data = $request->validate([
             'answers' => ['nullable', 'array'],
-            'answers.*' => ['integer', 'exists:question_options,id'],
+            'answers.*' => ['nullable', function (string $attribute, mixed $value, Closure $fail): void {
+                $optionIds = is_array($value) ? $value : [$value];
+
+                foreach ($optionIds as $optionId) {
+                    if (! is_numeric($optionId) || ! QuestionOption::query()->whereKey($optionId)->exists()) {
+                        $fail('Pilihan jawaban tidak valid.');
+
+                        return;
+                    }
+                }
+            }],
             'answers_text' => ['nullable', 'array'],
             'answers_text.*' => ['nullable', 'string', 'max:10000'],
         ]);
