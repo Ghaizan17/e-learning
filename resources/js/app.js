@@ -61,6 +61,73 @@ Alpine.data('portalShell', () => ({
     },
 }));
 
+Alpine.data('richEditor', ({ initial = '', name = 'content_html' } = {}) => ({
+    linkOpen: false,
+    linkUrl: '',
+    savedRange: null,
+    linkId: `rich-link-${Math.random().toString(36).slice(2, 8)}`,
+
+    init() {
+        this.$refs.editor.innerHTML = initial;
+        document.execCommand('defaultParagraphSeparator', false, 'p');
+        this.sync();
+    },
+
+    sync() {
+        this.$refs.input.value = this.$refs.editor.innerHTML;
+    },
+
+    format(command, value = null) {
+        this.$refs.editor.focus();
+        document.execCommand(command, false, value);
+        this.sync();
+    },
+
+    block(tag) {
+        this.format('formatBlock', tag);
+    },
+
+    openLink() {
+        const selection = window.getSelection();
+
+        if (selection?.rangeCount > 0 && this.$refs.editor.contains(selection.anchorNode)) {
+            this.savedRange = selection.getRangeAt(0).cloneRange();
+        } else {
+            this.savedRange = null;
+        }
+
+        this.linkUrl = '';
+        this.linkOpen = true;
+
+        this.$nextTick(() => this.$refs.linkInput?.focus());
+    },
+
+    closeLink() {
+        this.linkOpen = false;
+        this.linkUrl = '';
+    },
+
+    applyLink() {
+        const url = this.linkUrl.trim();
+
+        if (url === '') {
+            return;
+        }
+
+        this.$refs.editor.focus();
+
+        if (this.savedRange) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(this.savedRange);
+        }
+
+        document.execCommand('createLink', false, url);
+        this.sync();
+        this.closeLink();
+    },
+}));
+
 Alpine.data('quizAttempt', (config) => ({
     remaining: Number(config.remaining),
     saving: false,

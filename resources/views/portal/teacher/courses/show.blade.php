@@ -221,9 +221,7 @@
                                                     :value="$lesson->estimated_duration_minutes" min="1" max="600" />
                                     </div>
                                     <div class="md:col-span-2">
-                                        <label class="block text-sm font-medium text-slate-700">Konten HTML</label>
-                                        <textarea name="content_html" rows="4"
-                                                  class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs">{{ $lesson->content_html }}</textarea>
+                                        <x-ui.rich-editor name="content_html" :value="$lesson->content_html" />
                                     </div>
                                     <div>
                                         <x-ui.input name="video_url" type="url" label="URL video" :value="$lesson->video_url" />
@@ -268,10 +266,7 @@
                                 <x-ui.input name="estimated_duration_minutes" type="number" label="Estimasi (menit)" min="1" max="600" />
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700">Konten HTML</label>
-                                <textarea name="content_html" rows="4"
-                                          class="mt-1.5 block w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs"
-                                          placeholder="<p>Isi materi…</p>"></textarea>
+                                <x-ui.rich-editor name="content_html" placeholder="Tulis materi pertama…" />
                             </div>
                             <div>
                                 <x-ui.input name="video_url" type="url" label="URL video" />

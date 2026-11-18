@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Lessons\Schemas;
 
 use App\Enums\LessonType;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -42,9 +42,14 @@ class LessonForm
                             ->numeric()
                             ->minValue(1)
                             ->maxValue(600),
-                        Textarea::make('content_html')
-                            ->label('Konten HTML')
-                            ->rows(6)
+                        RichEditor::make('content_html')
+                            ->label('Konten materi')
+                            ->toolbarButtons([
+                                ['bold', 'italic', 'underline', 'strike', 'link'],
+                                ['h2', 'h3'],
+                                ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                ['undo', 'redo'],
+                            ])
                             ->columnSpanFull(),
                         TextInput::make('video_url')
                             ->label('URL video')

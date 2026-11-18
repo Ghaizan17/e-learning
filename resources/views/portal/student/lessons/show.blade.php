@@ -53,7 +53,7 @@
 
                 @if ($lesson->content_html)
                     <div @class([
-                        'prose prose-slate max-w-none text-sm leading-relaxed',
+                        'rich-content',
                         'mt-4' => $lesson->type !== LessonType::Text,
                     ])>
                         {!! $lesson->content_html !!}
