@@ -33,7 +33,8 @@ class ChaptersRelationManager extends RelationManager
                     ->maxLength(150),
                 Textarea::make('description')
                     ->label('Deskripsi')
-                    ->rows(2),
+                    ->rows(2)
+                    ->columnSpanFull(),
                 Toggle::make('is_published')
                     ->label('Terbitkan bab')
                     ->inline(false),

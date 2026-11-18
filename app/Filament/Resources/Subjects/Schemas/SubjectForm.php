@@ -15,7 +15,8 @@ class SubjectForm
         return $schema
             ->components([
                 Section::make('Mata pelajaran')
-                    ->columns(1)
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
                         TextInput::make('name')
                             ->label('Nama')

@@ -17,7 +17,8 @@ class LessonForm
         return $schema
             ->components([
                 Section::make('Materi')
-                    ->columns(1)
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
                         Select::make('chapter_id')
                             ->label('Bab')

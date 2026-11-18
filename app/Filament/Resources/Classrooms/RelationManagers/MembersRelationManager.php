@@ -166,7 +166,8 @@ class MembersRelationManager extends RelationManager
                             ->required(),
                         Textarea::make('note')
                             ->label('Catatan')
-                            ->rows(2),
+                            ->rows(2)
+                            ->columnSpanFull(),
                     ])),
                 Action::make('leave')
                     ->label('Keluarkan')

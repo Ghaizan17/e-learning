@@ -14,7 +14,8 @@ class DepartmentForm
         return $schema
             ->components([
                 Section::make('Program keahlian')
-                    ->columns(1)
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
                         TextInput::make('name')
                             ->label('Nama')

@@ -17,7 +17,8 @@ class CourseForm
         return $schema
             ->components([
                 Section::make('Kursus')
-                    ->columns(1)
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
                         Select::make('teacher_assignment_id')
                             ->label('Penugasan mengajar')

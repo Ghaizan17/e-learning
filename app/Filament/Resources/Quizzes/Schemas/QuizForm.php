@@ -18,7 +18,8 @@ class QuizForm
         return $schema
             ->components([
                 Section::make('Kuis')
-                    ->columns(1)
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
                         Select::make('course_id')
                             ->label('Kursus')

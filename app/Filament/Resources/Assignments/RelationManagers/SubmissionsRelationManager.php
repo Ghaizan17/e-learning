@@ -60,7 +60,8 @@ class SubmissionsRelationManager extends RelationManager
                             ->required(),
                         Textarea::make('feedback')
                             ->label('Umpan balik')
-                            ->rows(3),
+                            ->rows(3)
+                            ->columnSpanFull(),
                     ])
                     ->fillForm(fn (Submission $record): array => [
                         'score' => $record->grade?->score,
