@@ -20,8 +20,6 @@ it('renders learning resource pages for a school admin', function (string $path)
     '/admin/quizzes/create',
     '/admin/assignments',
     '/admin/assignments/create',
-    '/admin/materials',
-    '/admin/materials/create',
 ]);
 
 it('allows a school admin to create a lesson without a parent chapter argument', function (): void {

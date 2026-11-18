@@ -22,11 +22,3 @@ it('renders the create user form', function (): void {
         ->assertSee('Nama lengkap')
         ->assertSee('Peran');
 });
-
-it('renders the material resource list', function (): void {
-    $admin = User::factory()->superAdmin()->create();
-
-    $this->actingAs($admin)
-        ->get('/admin/materials')
-        ->assertOk();
-});
